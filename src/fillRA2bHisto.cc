@@ -1,7 +1,7 @@
 #ifndef FILLRA2BHISTO
 #define FILLRA2BHISTO
 
-#include "filler.h"
+#include "AnalysisTools/src/filler.h"
 #include <iostream>
 #include <string>
 #include <cassert>
@@ -19,6 +19,7 @@ public :
   TH1F* histo;
   TreeType* ntuple;
   TString weightbranch;
+  bool zinvCR;
 
   fillRA2bHisto()
     : filler<TreeType>("fillRA2bHisto"){
@@ -27,21 +28,32 @@ public :
   };
   
   fillRA2bHisto( TreeType* ntuple_ , 
-		   TString histotag ,
-		   TString weightbranch_ )
+		 TString histotag ,
+		 TString weightbranch_ ,
+		 bool zinvCR_ = false )
 	     : filler<TreeType>("fillRA2bHisto")
 	     {
 
 	       ntuple = ntuple_;
 	       weightbranch = weightbranch_;
+	       zinvCR = zinvCR_;
 
 	       histo = new TH1F("RA2bBins_"+histotag,"RA2bBins_"+histotag,72,0.5,72.5);
-	       ntuple->fChain->SetBranchStatus("NJets",1);	       
-	       ntuple->fChain->SetBranchStatus("BTags",1);
-	       ntuple->fChain->SetBranchStatus("MHT",1);
-	       ntuple->fChain->SetBranchStatus("HT",1);
-	       ntuple->fChain->SetBranchStatus(weightbranch,1);
-	       
+
+	       if( ! zinvCR ){
+		 ntuple->fChain->SetBranchStatus("NJets",1);	       
+		 ntuple->fChain->SetBranchStatus("BTags",1);
+		 ntuple->fChain->SetBranchStatus("MHT",1);
+		 ntuple->fChain->SetBranchStatus("HT",1);
+		 ntuple->fChain->SetBranchStatus(weightbranch,1);
+	       }else{
+		 ntuple->fChain->SetBranchStatus("NJetsclean",1);	       
+		 ntuple->fChain->SetBranchStatus("BTagsclean",1);
+		 ntuple->fChain->SetBranchStatus("MHTclean",1);
+		 ntuple->fChain->SetBranchStatus("HTclean",1);
+		 ntuple->fChain->SetBranchStatus(weightbranch,1);
+	       }
+    
 	     };
 
   int HTMHTbin( double HT, double MHT ){
@@ -65,47 +77,62 @@ public :
 
   bool process( ) override {
 
+    double HT,MHT;
+    int NJets,BTags;
+
+    if( ! zinvCR ){
+      HT = ntuple->HT;
+      MHT = ntuple->MHT;
+      NJets = ntuple->NJets;
+      BTags = ntuple->BTags;
+    }else{
+      HT = ntuple->HT;
+      MHT = ntuple->MHT;
+      NJets = ntuple->NJets;
+      BTags = ntuple->BTags;
+    }
+
     //--------------------- low jet multiplicity -------------------
-    if( ntuple->NJets>=4 && ntuple->NJets<=6 ){
-      if( ntuple->BTags==0 ){
-	histo->Fill( 1 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+    if( NJets>=4 && NJets<=6 ){
+      if( BTags==0 ){
+	histo->Fill( 1 + HTMHTbin( HT , MHT ) );
       }
-      if( ntuple->BTags==1 ){
-	histo->Fill( 7 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags==1 ){
+	histo->Fill( 7 + HTMHTbin( HT , MHT ) );
       }
-      if( ntuple->BTags==2 ){
-	histo->Fill( 13 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags==2 ){
+	histo->Fill( 13 + HTMHTbin( HT , MHT ) );
       }
-      if( ntuple->BTags>=3 ){
-	histo->Fill( 19 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags>=3 ){
+	histo->Fill( 19 + HTMHTbin( HT , MHT ) );
       }
-    }else if( ntuple->NJets>=7 && ntuple->NJets<=8 ){
+    }else if( NJets>=7 && NJets<=8 ){
       //--------------------- med jet multiplicity -------------------
-      if( ntuple->BTags==0 ){
-	histo->Fill( 1 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags==0 ){
+	histo->Fill( 1 + HTMHTbin( HT , MHT ) );
       }
-      if( ntuple->BTags==1 ){
-	histo->Fill( 7 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags==1 ){
+	histo->Fill( 7 + HTMHTbin( HT , MHT ) );
       }
-      if( ntuple->BTags==2 ){
-	histo->Fill( 13 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags==2 ){
+	histo->Fill( 13 + HTMHTbin( HT , MHT ) );
       }
-      if( ntuple->BTags>=3 ){
-	histo->Fill( 19 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags>=3 ){
+	histo->Fill( 19 + HTMHTbin( HT , MHT ) );
       }
-    }else if( ntuple->NJets>=9 ){
+    }else if( NJets>=9 ){
       //--------------------- high jet multiplicity -------------------
-      if( ntuple->BTags==0 ){
-	histo->Fill( 1 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags==0 ){
+	histo->Fill( 1 + HTMHTbin( HT , MHT ) );
       }
-      if( ntuple->BTags==1 ){
-	histo->Fill( 7 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags==1 ){
+	histo->Fill( 7 + HTMHTbin( HT , MHT ) );
       }
-      if( ntuple->BTags==2 ){
-	histo->Fill( 13 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags==2 ){
+	histo->Fill( 13 + HTMHTbin( HT , MHT ) );
       }
-      if( ntuple->BTags>=3 ){
-	histo->Fill( 19 + HTMHTbin( ntuple->HT , ntuple->MHT ) );
+      if( BTags>=3 ){
+	histo->Fill( 19 + HTMHTbin( HT , MHT ) );
       }
     }else{
       histo->Fill(0);

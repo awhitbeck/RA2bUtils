@@ -1,11 +1,10 @@
-#include "RA2bNtuple.cc"
-#include "analyzer.cc"
-#include "selectBaseline.cc"
-#include "skim.cc"
-#include "weightProducer.cc"
-#include "fillHisto.cc"
-#include "fillLeptonTruth.cc"
-#include "fillRA2bHisto.cc"
+#include "AnalysisTools/src/analyzer.cc"
+#include "AnalysisTools/src/fillHisto.cc"
+
+#include "RA2bUtils/src/RA2bNtuple.cc"
+#include "RA2bUtils/src/selectBaseline.cc"
+#include "RA2bUtils/src/fillRA2bHisto.cc"
+#include "RA2bUtils/src/helpers.h"
 
 #include "TString.h"
 #include "TChain.h"
@@ -14,8 +13,6 @@
 #include <cstdio>
 #include <string>
 #include <iostream>
-
-#include "helpers.h"
 
 using namespace std; 
 

@@ -1,5 +1,5 @@
-#ifndef SELECTBASELINE
-#define SELECTBASELINE
+#ifndef SELECTSINGLEPHOTON
+#define SELECTSINGLEPHOTON
 
 #include "AnalysisTools/src/processor.h"
 
@@ -10,7 +10,7 @@
 
 using namespace std;
 
-template <class TreeType> class selectBaseline : public processor<TreeType> {
+template <class TreeType> class selectSinglePhoton : public processor<TreeType> {
 
 public : 
 
@@ -18,18 +18,18 @@ public :
   TreeType* ntuple;
   TString label;
 
-  selectBaseline()
-    : processor<TreeType>("selectBaseline")
+  selectSinglePhoton()
+    : processor<TreeType>("selectSinglePhoton")
   {
     ntuple = 0; 
   };
-  selectBaseline( TreeType *ntuple_ ,
+  selectSinglePhoton( TreeType *ntuple_ ,
 		  TString label_ )
-    : processor<TreeType>("selectBaseline")
+    : processor<TreeType>("selectSinglePhoton")
   {
     ntuple = ntuple_;
     label = label_;
-    histo = new TH1F("selectBaselineYields_"+label,"selectBaselineYields_"+label,9,0.5,9.5);
+    histo = new TH1F("selectSinglePhotonYields_"+label,"selectSinglePhotonYields_"+label,9,0.5,9.5);
   };
 
   bool process( ) override {
@@ -52,21 +52,21 @@ public :
     histo->Fill(0);
     if( ntuple->Leptons == 0 ) histo->Fill(1);
     else return false;
-    if( ntuple->MHT>200. ) histo->Fill(2); 
+    if( ntuple->MHTclean>200. ) histo->Fill(2); 
     else return false;
-    if( ntuple->NumPhotons >= 0 ) histo->Fill(3);
+    if( ntuple->NumPhotons == 1 ) histo->Fill(3);
     else return false;
-    if( ntuple->HT>500. ) histo->Fill(4);
+    if( ntuple->HTclean>500. ) histo->Fill(4);
     else return false;
-    if( ntuple->NJets>=4 ) histo->Fill(5);
+    if( ntuple->NJetsclean>=4 ) histo->Fill(5);
     else return false;
-    if( ntuple->DeltaPhi1>0.5 ) histo->Fill(6);
+    if( ntuple->DeltaPhi1clean>0.5 ) histo->Fill(6);
     else return false;
-    if( ntuple->DeltaPhi2>0.5 ) histo->Fill(7);
+    if( ntuple->DeltaPhi2clean>0.5 ) histo->Fill(7);
     else return false;
-    if( ntuple->DeltaPhi3>0.3 ) histo->Fill(8);
+    if( ntuple->DeltaPhi3clean>0.3 ) histo->Fill(8);
     else return false;
-    if( ntuple->DeltaPhi4>0.3 ) histo->Fill(9);
+    if( ntuple->DeltaPhi4clean>0.3 ) histo->Fill(9);
     else return false;
 
     return true;
