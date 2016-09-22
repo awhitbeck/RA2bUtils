@@ -52,13 +52,13 @@ public :
     histo->Fill(0);
     if( ntuple->Leptons == 0 ) histo->Fill(1);
     else return false;
-    if( ntuple->MHT>200. ) histo->Fill(2); 
+    if( ntuple->MHT>250. ) histo->Fill(2); 
     else return false;
     if( ntuple->NumPhotons >= 0 ) histo->Fill(3);
     else return false;
-    if( ntuple->HT>500. ) histo->Fill(4);
+    if( ntuple->HT>300. ) histo->Fill(4);
     else return false;
-    if( ntuple->NJets>=4 ) histo->Fill(5);
+    if( ntuple->NJets>=2 ) histo->Fill(5);
     else return false;
     if( ntuple->DeltaPhi1>0.5 ) histo->Fill(6);
     else return false;

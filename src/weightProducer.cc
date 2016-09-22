@@ -72,6 +72,7 @@ public :
 
   };
 
+  void postProcess()override{};
   bool process( ) override {
 
     int SusyLSPMass;
